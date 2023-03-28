@@ -1,0 +1,62 @@
+name: Publish Swift Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-swift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: toeverything/Octobase
+          ref: refs/heads/master
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Set up cargo cache
+        uses: actions/cache@v3
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ./vendor
+            ./.cargo/config
+            ./node_modules/.pnpm-store
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+      - name: build swift
+        run: |
+          cargo build -p jwst-swift-integrate --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: swift-build-output
+          path: apps/swift/OctoBaseSwift
+      - uses: actions/checkout@v3
+        with:
+          repository: toeverything/octobase-swift-binding
+          ref: refs/heads/master
+      - uses: actions/download-artifact@v3
+        with:
+          name: swift-build-output
+          path: ~/swift-build-output
+      - name: update swift package
+        run: |
+          rm -rf RustXcframework Sources && rm Package.swift
+          cp -r ~/swift-build-output/* .
+          chmod +x ./scripts/bump-podspec-version.sh && ./scripts/bump-podspec-version.sh
+          git config --global user.name ${{ github.actor }}
+          git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git add . && git commit -m "bump version"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.ref }}
+      - run: |
+          chmod +x ./scripts/push-tag.sh && ./scripts/push-tag.sh
