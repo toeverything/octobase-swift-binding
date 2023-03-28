@@ -5,12 +5,15 @@ on:
 
 jobs:
   build-swift:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v3
         with:
           repository: toeverything/Octobase
           ref: refs/heads/master
+      - name: Set up Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -33,19 +36,13 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo-
       - name: build swift
         run: |
-          cargo build -p jwst-swift-integrate --release
-      - uses: actions/upload-artifact@v3
-        with:
-          name: swift-build-output
-          path: apps/swift/OctoBaseSwift
+          rm -rf apps/swift/OctoBaseSwift
+          cargo run -p jwst-swift-integrate --release
+          cp -r apps/swift/OctoBaseSwift ~/swift-build-output
       - uses: actions/checkout@v3
         with:
           repository: toeverything/octobase-swift-binding
           ref: refs/heads/master
-      - uses: actions/download-artifact@v3
-        with:
-          name: swift-build-output
-          path: ~/swift-build-output
       - name: update swift package
         run: |
           rm -rf RustXcframework Sources && rm Package.swift
