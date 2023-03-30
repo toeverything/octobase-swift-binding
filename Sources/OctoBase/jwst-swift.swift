@@ -556,6 +556,10 @@ extension Storage {
     public convenience init<GenericIntoRustString: IntoRustString>(_ path: GenericIntoRustString) {
         self.init(ptr: __swift_bridge__$Storage$new({ let rustString = path.intoRustString(); rustString.isOwned = false; return rustString.ptr }()))
     }
+
+    public convenience init<GenericIntoRustString: IntoRustString>(_ path: GenericIntoRustString, _ level: GenericIntoRustString) {
+        self.init(ptr: __swift_bridge__$Storage$new_with_log_level({ let rustString = path.intoRustString(); rustString.isOwned = false; return rustString.ptr }(), { let rustString = level.intoRustString(); rustString.isOwned = false; return rustString.ptr }()))
+    }
 }
 public class StorageRefMut: StorageRef {
     public override init(ptr: UnsafeMutableRawPointer) {

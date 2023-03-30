@@ -117,6 +117,7 @@ void* __swift_bridge__$Workspace$get_blocks_by_flavour(void* self, struct RustSt
 void* __swift_bridge__$Workspace$get_search_index(void* self);
 bool __swift_bridge__$Workspace$set_search_index(void* self, void* fields);
 void* __swift_bridge__$Storage$new(void* path);
+void* __swift_bridge__$Storage$new_with_log_level(void* path, void* level);
 void* __swift_bridge__$Storage$error(void* self);
 void* __swift_bridge__$Storage$connect(void* self, void* workspace_id, void* remote);
 void* __swift_bridge__$Storage$sync(void* self, void* workspace_id, void* remote);
