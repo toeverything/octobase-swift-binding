@@ -583,12 +583,8 @@ extension StorageRef {
         __swift_bridge__$Storage$is_offline(ptr)
     }
 
-    public func is_initialized() -> Bool {
-        __swift_bridge__$Storage$is_initialized(ptr)
-    }
-
-    public func is_syncing() -> Bool {
-        __swift_bridge__$Storage$is_syncing(ptr)
+    public func is_connected() -> Bool {
+        __swift_bridge__$Storage$is_connected(ptr)
     }
 
     public func is_finished() -> Bool {
@@ -601,6 +597,10 @@ extension StorageRef {
 
     public func get_sync_state() -> RustString {
         RustString(ptr: __swift_bridge__$Storage$get_sync_state(ptr))
+    }
+
+    public func get_last_synced() -> RustVec<Int64> {
+        RustVec(ptr: __swift_bridge__$Storage$get_last_synced(ptr))
     }
 }
 extension Storage: Vectorizable {
