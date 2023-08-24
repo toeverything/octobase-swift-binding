@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "octobase"
-  spec.version      = "0.0.30"
+  spec.version      = "0.0.31"
   spec.summary      = "octobase."
   spec.description  = "swift binding of octobase."
   spec.homepage     = "https://github.com/toeverything/OctoBase"
